@@ -3,8 +3,10 @@ const cam = document.getElementById('cam')
 const startVideo = () => {
     navigator.mediaDevices.enumerateDevices()
     .then(devices => {
+        console.log(devices)
         if (Array.isArray(devices)) {
             devices.forEach(device => {
+                console.log(device)
                 if (device.kind === 'videoinput') {
                     if (device.label.includes('C920')) {
                         navigator.getUserMedia(
@@ -22,7 +24,7 @@ const startVideo = () => {
 }
 
 const loadLabels = () => {
-    const labels = ['Matheus Castiglioni']
+    const labels = ['Isaque Mansur']
     return Promise.all(labels.map(async label => {
         const descriptions = []
         for (let i = 1; i <= 5; i++) {
@@ -72,7 +74,7 @@ cam.addEventListener('play', async () => {
         )
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
         faceapi.draw.drawDetections(canvas, resizedDetections)
-        faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+        faceapi.draw.drawFaceLandmarks(canvas, resizedDetections, { lineWidth: 5, color: 'red' })
         faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
         resizedDetections.forEach(detection => {
             const { age, gender, genderProbability } = detection
@@ -89,4 +91,7 @@ cam.addEventListener('play', async () => {
             ], box.bottomRight).draw(canvas)
         })
     }, 100)
+    canvas.style.position = "fixed";
+    canvas.style.left = `${cam.getBoundingClientRect().left}px`;
+    canvas.style.top = `${cam.getBoundingClientRect().top}px`;
 })
